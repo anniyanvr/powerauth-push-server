@@ -26,7 +26,6 @@ The default database connectivity parameters in `powerauth-push-server.war` are 
 spring.datasource.url=jdbc:postgresql://localhost:5432/powerauth
 spring.datasource.username=powerauth
 spring.datasource.password=
-spring.datasource.driver-class-name=org.postgresql.Driver
 spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults=false
 spring.jpa.properties.hibernate.connection.characterEncoding=utf8
 spring.jpa.properties.hibernate.connection.useUnicode=true
@@ -46,14 +45,6 @@ powerauth.service.url=http://localhost:8080/powerauth-java-server/rest
 ```
 
 There are several optional configuration options you may want to set up.
-
-### Configuration of Push service URL
-
-Push server contains REST API which needs to be configured in case Push Server runs on non-standard port, non-standard context path or uses HTTPS. You can configure the service URL using following property:
-
-```
-powerauth.push.service.url=http://localhost:8080/powerauth-push-server
-```
 
 ### Enabling Storing of Sent Push Messages
 
@@ -126,14 +117,6 @@ The credentials are stored in the `pa_integration` table.
 
 _Note: The RESTful interface is secured using Basic HTTP Authentication (pre-emptive)._
 
-## Using up ALPN
-
-PowerAuth Push Server uses [Pushy](https://github.com/relayrides/pushy) to send notifications. Since Pushy uses the new HTTP/2 interface for sending APNs messages, underlying server must support this protocol. As a result, Java runtime / application container must support HTTP/2 as well.
-
-### APNL and Tomcat 8.0
-
-Put `alpn-boot` library (available [here](https://mvnrepository.com/artifact/org.mortbay.jetty.alpn/alpn-boot)) in `${CATALINA_HOME}/lib` folder and make sure to start Tomcat with `-Xbootclasspath/p:${CATALINA_HOME}/lib/alpn-boot.jar` parameters, so that the library is on classpath.
-
 ## Correlation Header Configuration (Optional)
 
 You can enable correlation header logging in Push server by enabling the following properties:
@@ -153,6 +136,9 @@ For best traceability, the correlation headers should be enabled in the whole Po
 
 ## Deploying Push Server
 
+PowerAuth Push Server uses [Pushy](https://github.com/relayrides/pushy) to send notifications.
+Since Pushy uses the new HTTP/2 interface for sending APNs messages, the underlying server must support this protocol.
+
 ### Inside the Container
 
 You can deploy PowerAuth Push Server into any Java EE container.
@@ -163,7 +149,7 @@ To deploy PowerAuth Push Server to Apache Tomcat, simply copy the WAR file in yo
 
 *__Important note: Since PowerAuth Push Server is a very simple application with direct access to the PowerAuth Server REST services, it must not be under any circumstances published publicly and must be constrained to the in-house closed infrastructure. The only exception to this rule is the requirement to open up ports for the purpose of communication with APNs and FCM services - the push notifications apparently would not work without access to the primary push service providers.__*
 
-## Outside the Container
+### Outside the Container
 
 You can also execute WAR file directly using the following command:
 
@@ -175,6 +161,15 @@ _Note: You can overwrite the port using `-Dserver.port=8090` parameter to avoid 
 
 *__Important note: Since PowerAuth Push Server is a very simple application with direct access to the PowerAuth Server REST services, it must not be under any circumstances published publicly and must be constrained to the in-house closed infrastructure. The only exception to this rule is the requirement to open up ports for the purpose of communication with APNs and FCM services - the push notifications apparently would not work without access to the primary push service providers.__*
 
-## Deploying Push Server On JBoss / Wildfly
+### Deploying Push Server On JBoss / Wildfly
 
 Follow the extra instructions in chapter [Deploying Push Server on JBoss / Wildfly](./Deploying-Wildfly.md).
+
+### How to Disable Display of Tomcat Version
+
+It case you do not want to show Tomcat version on error pages when deploying Push server, you can use the following configuration:
+
+- Edit the file `<install-directory>/conf/server.xml`.
+- Search for the parameters `<Host name="..."/>`.
+- Just below that line, insert the following parameters `<Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false"/>`.
+- Restart Tomcat.

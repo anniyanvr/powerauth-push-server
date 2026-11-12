@@ -10,6 +10,10 @@
 
 [Configuration Properties](./Configuration-Properties.md)
 
+[Monitoring](./PowerAuth-Push-Server-Monitoring.md)
+
+[Artifact Signing](./Artifact-Signing.md)
+
 **Integration Tutorials**
 
 [Integrate with Push Server](./Push-Server-Integration.md)
@@ -24,6 +28,6 @@
 
 **Technical Topics**
 
-[Mapping Abstract Payload to APNS/FCM](./Push-Message-Payload-Mapping.md)
+[Mapping Abstract Payload to APNS/FCM/HMS](./Push-Message-Payload-Mapping.md)
 
 [Running Behind Proxy](./Running-Behind-Proxy.md)

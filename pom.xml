@@ -6,15 +6,15 @@
     <name>powerauth-push-server-parent</name>
     <description>PowerAuth Push Server</description>
 
-    <groupId>io.getlime.security</groupId>
+    <groupId>com.wultra.security</groupId>
     <artifactId>powerauth-push-server-parent</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>2.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.8</version>
+        <version>4.1.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -29,7 +29,7 @@
     <licenses>
         <license>
             <name>Apache 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
@@ -68,32 +68,132 @@
     </modules>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <!--  Wultra Dependencies  -->
+        <wultra-core.version>2.3.0-SNAPSHOT</wultra-core.version>
+        <powerauth.version>2.3.0-SNAPSHOT</powerauth.version>
+        <powerauth-crypto.version>2.3.0-SNAPSHOT</powerauth-crypto.version>
+        <powerauth-restful-integration.version>2.3.0-SNAPSHOT</powerauth-restful-integration.version>
 
         <!-- Library Versions -->
-        <guava.version>31.1-jre</guava.version>
-        <h2.version>2.1.212</h2.version>
-        <jackson.version>2.13.4</jackson.version>
-        <jackson-databind.version>2.13.4</jackson-databind.version>
-        <javax.interceptor-api.version>1.2.2</javax.interceptor-api.version>
-        <rest-base.version>1.5.0</rest-base.version>
-        <powerauth.version>1.4.0-SNAPSHOT</powerauth.version>
-        <powerauth-crypto.version>1.4.0-SNAPSHOT</powerauth-crypto.version>
-        <pushy.version>0.15.1</pushy.version>
-        <springdoc-openapi.version>1.6.9</springdoc-openapi.version>
-        <google-api-client.version>1.35.1</google-api-client.version>
-        <firebase-admin.version>8.2.0</firebase-admin.version>
-        <bc.version>1.70</bc.version>
+        <pushy.version>0.15.6</pushy.version>
+        <google-api-client.version>2.9.2</google-api-client.version>
+        <firebase-admin.version>9.11.0</firebase-admin.version>
+        <logstash.version>9.0</logstash.version>
+        <central.publishing.plugin.version>0.12.0</central.publishing.plugin.version>
+
+        <!-- Documentation Dependencies -->
+        <springdoc-openapi-starter-webmvc-ui.version>3.0.3</springdoc-openapi-starter-webmvc-ui.version>
+        <swagger-annotations-jakarta.version>2.2.55</swagger-annotations-jakarta.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- Project Dependencies -->
+            <dependency>
+                <groupId>com.wultra.security</groupId>
+                <artifactId>powerauth-push-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wultra.security</groupId>
+                <artifactId>powerauth-push-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Wultra Dependencies -->
+            <dependency>
+                <groupId>com.wultra.core</groupId>
+                <artifactId>rest-model-base</artifactId>
+                <version>${wultra-core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wultra.core</groupId>
+                <artifactId>rest-client-base</artifactId>
+                <version>${wultra-core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wultra.security</groupId>
+                <artifactId>powerauth-client-model</artifactId>
+                <version>${powerauth.version}</version>
+            </dependency>
+
+            <!-- Documentation -->
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations-jakarta</artifactId>
+                <version>${swagger-annotations-jakarta.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>${central.publishing.plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>io.github.git-commit-id</groupId>
+                    <artifactId>git-commit-id-maven-plugin</artifactId>
+                    <version>${git-commit-id-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>get-the-git-infos</id>
+                            <goals>
+                                <goal>revision</goal>
+                            </goals>
+                            <phase>initialize</phase>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <projectBuildOutputTimestamp>${maven.build.timestamp}</projectBuildOutputTimestamp>
+                        <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                        <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                        <commitIdGenerationMode>full</commitIdGenerationMode>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludedGroups>external-service</excludedGroups>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -104,11 +204,38 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>1.18.20.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <version>${lombok.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/delombok</outputDirectory>
+                    <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                    <addOutputDirectory>false</addOutputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
                 <configuration>
+                    <sourcepath>${project.build.directory}/delombok</sourcepath>
                     <failOnError>false</failOnError>
                 </configuration>
                 <executions>
@@ -120,10 +247,32 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>3.0.0-M2</version>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-banned-dependencies</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>org.apache.tomcat.embed:*:*:*:compile</exclude>
+                                    </excludes>
+                                </bannedDependencies>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
@@ -154,12 +303,87 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>internal-repository</id>
+            <activation>
+                <property>
+                    <name>useInternalRepo</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+            </properties>
+            <distributionManagement>
+                <repository>
+                    <id>jfrog-central</id>
+                    <name>Wultra Artifactory-releases</name>
+                    <url>https://wultra.jfrog.io/artifactory/internal-maven-repository</url>
+                </repository>
+                <snapshotRepository>
+                    <id>jfrog-central</id>
+                    <name>Wultra Artifactory-snapshots</name>
+                    <url>https://wultra.jfrog.io/artifactory/internal-maven-repository</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <repositories>
+                <repository>
+                    <id>jfrog-central</id>
+                    <name>Wultra Artifactory-releases</name>
+                    <url>https://wultra.jfrog.io/artifactory/internal-maven-repository</url>
+                </repository>
+                <repository>
+                    <id>central-portal-snapshots</id>
+                    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+        <profile>
+            <id>public-repository</id>
+            <activation>
+                <property>
+                    <name>!useInternalRepo</name>
+                </property>
+            </activation>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>central-portal-snapshots-distribution</id>
+                    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>central-portal-staging-distribution</id>
+                    <url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+            <properties>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>${env.server_id}</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                            <waitMaxTime>${env.wait_max_time}</waitMaxTime>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <repositories>
         <repository>
-            <id>ossrh-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -168,16 +392,5 @@
             </snapshots>
         </repository>
     </repositories>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh-snapshots-distribution</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh-staging-distribution</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
 </project>

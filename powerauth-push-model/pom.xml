@@ -4,43 +4,48 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>powerauth-push-model</name>
     <artifactId>powerauth-push-model</artifactId>
     <description>PowerAuth Push Server RESTful Model Classes</description>
-    <version>1.4.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <parent>
         <artifactId>powerauth-push-server-parent</artifactId>
-        <groupId>io.getlime.security</groupId>
-        <version>1.4.0-SNAPSHOT</version>
+        <groupId>com.wultra.security</groupId>
+        <version>2.3.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>io.getlime.core</groupId>
+            <groupId>com.wultra.core</groupId>
             <artifactId>rest-model-base</artifactId>
-            <version>${rest-base.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>io.getlime.core</groupId>
-            <artifactId>rest-client-base</artifactId>
-            <version>${rest-base.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j-to-slf4j</artifactId>
-                    <groupId>org.apache.logging.log4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.getlime.security</groupId>
+            <groupId>com.wultra.security</groupId>
             <artifactId>powerauth-client-model</artifactId>
-            <version>${powerauth.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc-openapi.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
